@@ -31,7 +31,7 @@ export default class LocalCodeSchools extends NavigationMixin(LightningElement) 
       this.longitude = property.Location__Longitude__s.value;
     } else if (error) {
       this.stopLoading(500);
-      showError = true;
+      this.showError = true;
       this.errorMessage = error.message;
     }
   }

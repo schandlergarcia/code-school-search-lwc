@@ -35,15 +35,25 @@ The component consists of the following:
 
 ## Installation
 
-This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc) to install this component. You
+This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc) and the [Lightning Messaging Utility](https://github.com/schandlergarcia/lightning-messaging-utility) to install this component. 
 
 _Install Dreamhouse into a scratch org_
 Follow along with the [Dreamhouse Quick Start](https://trailhead.salesforce.com/content/learn/projects/quick-start-dreamhouse-sample-app) on Trailhead.
 
 _Clone this repository and push to your Dreamhouse org_
-`git clone https://github.com/schandlergarcia/code-school-search-lwc`
-`cd code-school-search-lwc`
-`sfdx force:source:push -u <dreamhouse org username>`
+
+```
+git clone https://github.com/schandlergarcia/code-school-search-lwc
+cd code-school-search-lwc
+sfdx force:source:push -u <dreamhouse org username>
+```
+_Clone the Lightning Messaging Utility repository and push to your Dreamhouse org_
+
+```
+git clone https://github.com/schandlergarcia/lightning-messaging-utility
+cd lightning-messaging-utility
+sfdx force:source:push -u <dreamhouse org username>
+```
 
 ## Code Highlights
 
@@ -136,7 +146,7 @@ Use an `@wire` adaptor to enable the `getNearbyCodeSchools` method to be called 
 
 The component relies on a number of base components from the [Component Library](https://developer.salesforce.com/docs/component-library/overview/components)
 
-_lightning-card_
+**lightning-card**
 A Lightning Card component is used to wrap the body of the component, this gives the user a consistent experience with the way that salesforce exposes features into the UI. We have also specified a title and icon in the card. We have used the `slot="footer` to supply attribution to Code.org.
 
 ```xml
@@ -153,7 +163,7 @@ A Lightning Card component is used to wrap the body of the component, this gives
 </lightning-card>
 ```
 
-_lightning-tile_
+**lightning-tile**
 A Lightning Tile is used to display each school record in the UI. We are iterating over the `schools` array using a `template for:each={schools}` iterator and hydrating the tiles with each item. We are using an html dataset property to expose the `url` of the `school` to the element using `data-url={school.website}`. We are handling the selection of the tile using the `navigateToUrl` function.
 
 ```xml
@@ -162,7 +172,7 @@ A Lightning Tile is used to display each school record in the UI. We are iterati
 </lightning-tile>
 ```
 
-_lightning-badge_
+**lightning-badge**
 A lightning Badge is used to display each language offered by the school. We are iterating over the `school.languages` array inside of the `schools` iteration. We are then hydrating the `lightning-badge` with the `language` value.
 
 ```xml
@@ -226,3 +236,7 @@ The component uses `template if:true={property}` and `template if:false={propert
   </lightning-card>
 </template>
 ```
+
+## Code.org Local Schools API
+
+Code.org makes their database available to give people the opportunity to use it to build their skills and get createive! Huge thanks to them for keeping this published and allowing the developer community to continue using it! Check it out here: [Code.org Local Schools Databases API](https://code.org/learn/find-school/json).
