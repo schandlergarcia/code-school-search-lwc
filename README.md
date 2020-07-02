@@ -41,6 +41,8 @@ This component requires that you have installed the [Dreamhouse Sample App](http
 
 Follow along with the [Dreamhouse Quick Start](https://trailhead.salesforce.com/content/learn/projects/quick-start-dreamhouse-sample-app) on Trailhead.
 
+<img src="screenshots/dreamhouse-quick-start.png" alt="Dreamhouse Quick Start"/>
+
 **Clone this repository and push to your Dreamhouse org**
 
 ```
