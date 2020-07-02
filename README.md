@@ -33,38 +33,127 @@ The component consists of the following:
   - Illustrations
   - Inline Error Handling
 
-### Prerequisites
+## Installation
 
-This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc)
-To start developing with this model in Visual Studio Code, see [Org Development Model with VS Code](https://forcedotcom.github.io/salesforcedx-vscode/articles/user-guide/org-development-model). For details about the model, see the [Org Development Model](https://trailhead.salesforce.com/content/learn/modules/org-development-model) Trailhead module.
+This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc) to install this component. You
 
-## The `sfdx-project.json` File
+_Install Dreamhouse into a scratch org_
+Follow along with the [Dreamhouse Quick Start](https://trailhead.salesforce.com/content/learn/projects/quick-start-dreamhouse-sample-app) on Trailhead.
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+_Clone this repository and push to your Dreamhouse org_
+`git clone https://github.com/schandlergarcia/code-school-search-lwc`
+`cd code-school-search-lwc`
+`sfdx force:source:push -u <dreamhouse org username>`
 
-The most important parts of this file for getting started are the `sfdcLoginUrl` and `packageDirectories` properties.
+## Documentation
 
-The `sfdcLoginUrl` specifies the default login URL to use when authorizing an org.
+This component was designed to give you an introduction into designing and developing a Lightning Web Component around a use case that uses a 3rd party data source.
 
-The `packageDirectories` filepath tells VS Code and Salesforce CLI where the metadata files for your project are stored. You need at least one package directory set in your file. The default setting is shown below. If you set the value of the `packageDirectories` property called `path` to `force-app`, by default your metadata goes in the `force-app` directory. If you want to change that directory to something like `src`, simply change the `path` value and make sure the directory you’re pointing to exists.
+### 1) Apex Callout - LocalCodeSchoolSearch.cls
 
-```json
-"packageDirectories" : [
-    {
-      "path": "force-app",
-      "default": true
-    }
-]
+Implement an Apex `@AuraEnabled(Cacheable=true)` method that accepts the latitude and longitude as parameters from a LWC. It then takes those coordinates and appends them onto the url parameters of an endpoint. We then callout to the API and pass the raw response back to our LWC.
+
+```apex
+  @AuraEnabled(cacheable=true)
+  public static String getNearbyCodeSchools(Decimal propertyLatitude, Decimal propertyLongitude) {
+    // Construct our Callout URL with our Lat and Lon from the component
+    String calloutURL = 'https://enigmatic-gorge-00974.herokuapp.com/?lat=' + propertyLatitude + '&lon=' + propertyLongitude;
+    String response = calloutToGoServer(calloutUrl);
+    return response;
+  }
 ```
 
-## Part 2: Working with Source
+### 2) Import a reference to the search endpoint
 
-For details about developing against scratch orgs, see the [Package Development Model](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_dev_model) module on Trailhead or [Package Development Model with VS Code](https://forcedotcom.github.io/salesforcedx-vscode/articles/user-guide/package-development-model).
+Import a reference to the `search` Apex method in the lookup parent component's JS:
 
-For details about developing against orgs that don’t have source tracking, see the [Org Development Model](https://trailhead.salesforce.com/content/learn/modules/org-development-model) module on Trailhead or [Org Development Model with VS Code](https://forcedotcom.github.io/salesforcedx-vscode/articles/user-guide/org-development-model).
+Utilize Lightning Data Services by importing the `getRecord` wire adapter and specifying the `Property__c.Location__Latitude__s` and `Property__c.Location__Longitude__s` fields to use as party of the query.
 
-## Part 3: Deploying to Production
+```js
+import { getRecord } from "lightning/uiRecordApi";
+const fields = ["Property__c.Location__Latitude__s", "Property__c.Location__Longitude__s"];
+```
 
-Don’t deploy your code to production directly from Visual Studio Code. The deploy and retrieve commands do not support transactional operations, which means that a deployment can fail in a partial state. Also, the deploy and retrieve commands don’t run the tests needed for production deployments. The push and pull commands are disabled for orgs that don’t have source tracking, including production orgs.
+Annotate the `getRecord` function with `@wire` to enable it to be executed every time the `recordId` property is changed. The the response is then passed into the `property` constant where the latitude and longitude are assigned to the respective `latitude` and `longitude` properties.
 
-Deploy your changes to production using [packaging](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_dev2gp.htm) or by [converting your source](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_source.htm#cli_reference_convert) into metadata format and using the [metadata deploy command](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference_force_mdapi.htm#cli_reference_deploy).
+```js
+
+  @api recordId;
+  latitude;
+  longitude;
+
+  @wire(getRecord, { recordId: "$recordId", fields })
+  wiredRecord({ error, data }) {
+    if (data) {
+      const property = data.fields;
+      this.latitude = property.Location__Latitude__s.value;
+      this.longitude = property.Location__Longitude__s.value;
+    } else if (error) {
+      this.stopLoading(500);
+      this.showError = true;
+      this.errorMessage = error.message;
+    }
+  }
+
+```
+
+### 3) Call the `getNearbyCodeSchools` Apex Method from the LWC
+
+Import the `getNearbyCodeSchools` method from the `LocalCodeSchoolSearch` Apex Class.
+
+```js
+import getNearbyCodeSchools from "@salesforce/apex/LocalCodeSchoolSearch.getNearbyCodeSchools";
+```
+
+Use an `@wire` adaptor to enable the `getNearbyCodeSchools` method to be called each time the components `latitude` or `longitude` properties have changed. In this instance, right after the `getRecord` adapter is called and the `latitude` or `longitude` properties are populated, the component will call the apex method and retrieve the response. The response is then parsed using `JSON.parse(response)` to get the data into a format we can use in the `localCodeSchools.html` template.
+
+```js
+
+  latitude;
+  longitude;
+  @track schools;
+
+  @wire(getNearbyCodeSchools, {
+    propertyLatitude: "$latitude",
+    propertyLongitude: "$longitude"
+  })
+  wiredSchools({ error, data }) {
+    if (data) {
+      this.stopLoading(500);
+      console.log(JSON.parse(data));
+      this.schools = JSON.parse(data);
+    } else if (error) {
+      this.stopLoading(500);
+      this.showError = true;
+      this.error = error.message;
+      this.schools = undefined;
+    }
+  }
+
+```
+
+### 4) Navigate to a selected URL
+
+Import a the `NavigationMixin` to enable Lightning Navigation Services in the LWC and extend the `LightningElement` with the mixin.
+
+```js
+import { NavigationMixin } from "lightning/navigation";
+
+export default class LocalCodeSchools extends NavigationMixin(LightningElement) {}
+```
+
+Capture data from the `onclick={navigateToUrl}` and use the html dataset property to identify the `data-url` from the event. Assign the url to the `url` constant and use the NavigationMixin to navigate to the `standard__webPage` reference.
+
+```js
+
+  navigateToUrl(event) {
+    const url = event.currentTarget.dataset.url;
+    this[NavigationMixin.Navigate]({
+      type: "standard__webPage",
+      attributes: {
+        url: url
+      }
+    });
+  }
+
+```
