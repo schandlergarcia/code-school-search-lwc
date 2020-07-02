@@ -35,19 +35,21 @@ The component consists of the following:
 
 ## Installation
 
-This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc) and the [Lightning Messaging Utility](https://github.com/schandlergarcia/lightning-messaging-utility) to install this component. 
+This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc) and the [Lightning Messaging Utility](https://github.com/schandlergarcia/lightning-messaging-utility) to install this component.
 
-_Install Dreamhouse into a scratch org_
+**Install Dreamhouse into a scratch org**
+
 Follow along with the [Dreamhouse Quick Start](https://trailhead.salesforce.com/content/learn/projects/quick-start-dreamhouse-sample-app) on Trailhead.
 
-_Clone this repository and push to your Dreamhouse org_
+**Clone this repository and push to your Dreamhouse org**
 
 ```
 git clone https://github.com/schandlergarcia/code-school-search-lwc
 cd code-school-search-lwc
 sfdx force:source:push -u <dreamhouse org username>
 ```
-_Clone the Lightning Messaging Utility repository and push to your Dreamhouse org_
+
+**Clone the Lightning Messaging Utility repository and push to your Dreamhouse org**
 
 ```
 git clone https://github.com/schandlergarcia/lightning-messaging-utility
