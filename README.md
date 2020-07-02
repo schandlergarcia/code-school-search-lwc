@@ -1,30 +1,42 @@
-# Salesforce App
+# Code.org Local School Search Lightning Web Component
 
-This guide helps Salesforce developers who are new to Visual Studio Code go from zero to a deployed app using Salesforce Extensions for VS Code and Salesforce CLI.
+This Lightning Web Component demonstrates a method for bringing external data into a Lightning Web Component. This component utilizes the code.org computer science school & program database to display the nearest 3 schools to a given property.
 
-## Part 1: Choosing a Development Model
+<img src="screenshots/property-overview.png" alt="Nearby Computer Science Schools LWC"/>
 
-There are two types of developer processes or models supported in Salesforce Extensions for VS Code and Salesforce CLI. These models are explained below. Each model offers pros and cons and is fully supported.
+## About
 
-### Package Development Model
+Using the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc) from the [Trailhead Sample Gallery](https://trailhead.salesforce.com/sample-gallery) we can demonstrate how to bring data into a Lighting Web Component from a 3rd Party Library. Using the `Property__c` record in the app, we can pull a list of nearby computer science schools using the [Code.org Local Schools Databases API](https://code.org/learn/find-school/json).
 
-The package development model allows you to create self-contained applications or libraries that are deployed to your org as a single package. These packages are typically developed against source-tracked orgs called scratch orgs. This development model is geared toward a more modern type of software development process that uses org source tracking, source control, and continuous integration and deployment.
+This project relies on an API that is hosted on heroku, you can find the code and deploy your own version of the API in the [Code.org Schools Geolocation API](https://github.com/schandlergarcia/code-schools-api-golang) repo.
 
-If you are starting a new project, we recommend that you consider the package development model. To start developing with this model in Visual Studio Code, see [Package Development Model with VS Code](https://forcedotcom.github.io/salesforcedx-vscode/articles/user-guide/package-development-model). For details about the model, see the [Package Development Model](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_dev_model) Trailhead module.
+<img src="screenshots/local-code-school-component.png" alt="Local Code School Component" width="350" align="right"/>
 
-If you are developing against scratch orgs, use the command `SFDX: Create Project` (VS Code) or `sfdx force:project:create` (Salesforce CLI) to create your project. If you used another command, you might want to start over with that command.
+## Features
 
-When working with source-tracked orgs, use the commands `SFDX: Push Source to Org` (VS Code) or `sfdx force:source:push` (Salesforce CLI) and `SFDX: Pull Source from Org` (VS Code) or `sfdx force:source:pull` (Salesforce CLI). Do not use the `Retrieve` and `Deploy` commands with scratch orgs.
+The component consists of the following:
 
-### Org Development Model
+- An Apex Callout to a 3rd Party API
+- Lightning Data Services for getting a records details
+- Apex wire adaptor to get data for a LWC
+- Using base components to power a UI
+- lightning-card
+- lightning-tile
+- lightning-badge
+- lightning-spinner
+- Using SLDS css utilities
+  - slds-grid
+  - vertical-list
+  - horizontal-list
+- Lightning Navigation Service
+- Lightning Messaging Utility from [Salesforce Labs](https://github.com/schandlergarcia/lightning-messaging-utility)
+  - Illustrations
+  - Inline Error Handling
 
-The org development model allows you to connect directly to a non-source-tracked org (sandbox, Developer Edition (DE) org, Trailhead Playground, or even a production org) to retrieve and deploy code directly. This model is similar to the type of development you have done in the past using tools such as Force.com IDE or MavensMate.
+### Prerequisites
 
+This component requires that you have installed the [Dreamhouse Sample App](https://github.com/trailheadapps/dreamhouse-lwc)
 To start developing with this model in Visual Studio Code, see [Org Development Model with VS Code](https://forcedotcom.github.io/salesforcedx-vscode/articles/user-guide/org-development-model). For details about the model, see the [Org Development Model](https://trailhead.salesforce.com/content/learn/modules/org-development-model) Trailhead module.
-
-If you are developing against non-source-tracked orgs, use the command `SFDX: Create Project with Manifest` (VS Code) or `sfdx force:project:create --manifest` (Salesforce CLI) to create your project. If you used another command, you might want to start over with this command to create a Salesforce DX project.
-
-When working with non-source-tracked orgs, use the commands `SFDX: Deploy Source to Org` (VS Code) or `sfdx force:source:deploy` (Salesforce CLI) and `SFDX: Retrieve Source from Org` (VS Code) or `sfdx force:source:retrieve` (Salesforce CLI). The `Push` and `Pull` commands work only on orgs with source tracking (scratch orgs).
 
 ## The `sfdx-project.json` File
 
