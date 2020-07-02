@@ -144,6 +144,8 @@ Use an `@wire` adaptor to enable the `getNearbyCodeSchools` method to be called 
     }
   }
 
+```
+
 ### 4) Base components
 
 The component relies on a number of base components from the [Component Library](https://developer.salesforce.com/docs/component-library/overview/components)
