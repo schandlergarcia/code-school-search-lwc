@@ -1,0 +1,86 @@
+<template>
+  <lightning-card title="Nearby Computer Science Schools" icon-name="standard:apex">
+    <div class="slds-var-p-left_medium slds-var-p-right_medium">
+      <template if:true={loading}>
+        <div class="exampleHolder">
+          <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </div>
+      </template>
+      <template if:false={loading}>
+        <template if:true={showError}>
+          <c-lwc-messaging-utility
+            show-message="true"
+            message-type="inline"
+            variant="error"
+            message-title="error"
+            message-body={errorMessage}
+            show-icon="true"
+            icon-name="utility:error"
+            icon-alternative-text="Error"
+          ></c-lwc-messaging-utility>
+        </template>
+        <template if:false={schools}>
+          <div class="slds-var-p-around_large">
+            <c-lwc-messaging-utility
+              show-message="true"
+              message-type="illustration"
+              illustration-name="fishing"
+              message-title="No Schools Found"
+              message-body="Please verify the properties location"
+            ></c-lwc-messaging-utility>
+          </div>
+        </template>
+        <template if:true={schools}>
+          <ul class="slds-has-dividers_around-space">
+            <template for:each={schools} for:item="school" for:index="i">
+              <li class="slds-item" key={school.i}>
+                <lightning-tile label={school.name} onclick={navigateToUrl} data-url={school.website}>
+                  <dl class="slds-list_horizontal slds-wrap">
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Distance">
+                      Distance
+                    </dt>
+                    <dd class="slds-item_detail slds-truncate" title="Distance">
+                      <lightning-formatted-number class="slds-var-p-right_x-small" value={school.Distance} minimum-fraction-digits="2"></lightning-formatted-number>
+                      miles away
+                    </dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Description">
+                      Description
+                    </dt>
+                    <dd class="slds-item_detail" title={school.format_description}>
+                      {school.format_description}
+                    </dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Levels">
+                      Levels
+                    </dt>
+                    <dd class="slds-item_detail" title={school.format_description}>
+                      <ul class="slds-list_horizontal slds-has-dividers_left">
+                        <template iterator:it={school.levels}>
+                          <li class="slds-item" key={it.value}>
+                            {it.value}
+                          </li>
+                        </template>
+                      </ul>
+                    </dd>
+                  </dl>
+                  <ul class="slds-list_horizontal slds-wrap">
+                    <template for:each={school.languages} for:item="language" for:index="i">
+                      <li class="slds-item slds-var-p-right_x-small slds-var-p-top_xx-small" key={language.i}>
+                        <lightning-badge label={language}></lightning-badge>
+                      </li>
+                    </template>
+                  </ul>
+                </lightning-tile>
+              </li>
+            </template>
+          </ul>
+        </template>
+      </template>
+    </div>
+    <div slot="footer">
+      <p class="slds-text-align_center">
+        Data supplied by the
+        <a data-url="https://code.org/" onclick={navigateToUrl}> code.org </a>Local School Database
+      </p>
+    </div>
+  </lightning-card>
+</template>
