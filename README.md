@@ -144,13 +144,11 @@ Use an `@wire` adaptor to enable the `getNearbyCodeSchools` method to be called 
     }
   }
 
-```
-
 ### 4) Base components
 
 The component relies on a number of base components from the [Component Library](https://developer.salesforce.com/docs/component-library/overview/components)
 
-**lightning-card**<br>
+[**lightning-card**](https://developer.salesforce.com/docs/component-library/bundle/lightning-card/example)<br>
 A Lightning Card component is used to wrap the body of the component, this gives the user a consistent experience with the way that salesforce exposes features into the UI. We have also specified a title and icon in the card. We have used the `slot="footer` to supply attribution to Code.org.
 
 ```xml
@@ -167,7 +165,7 @@ A Lightning Card component is used to wrap the body of the component, this gives
 </lightning-card>
 ```
 
-**lightning-tile**<br>
+[**lightning-tile**](https://developer.salesforce.com/docs/component-library/bundle/lightning-tile/example)<br>
 A Lightning Tile is used to display each school record in the UI. We are iterating over the `schools` array using a `template for:each={schools}` iterator and hydrating the tiles with each item. We are using an html dataset property to expose the `url` of the `school` to the element using `data-url={school.website}`. We are handling the selection of the tile using the `navigateToUrl` function.
 
 ```xml
@@ -176,7 +174,7 @@ A Lightning Tile is used to display each school record in the UI. We are iterati
 </lightning-tile>
 ```
 
-**lightning-badge**<br>
+[**lightning-badge**](https://developer.salesforce.com/docs/component-library/bundle/lightning-badge/example)<br>
 A lightning Badge is used to display each language offered by the school. We are iterating over the `school.languages` array inside of the `schools` iteration. We are then hydrating the `lightning-badge` with the `language` value.
 
 ```xml
