@@ -1,6 +1,6 @@
 # Code.org Local School Search Lightning Web Component
 
-This Lightning Web Component demonstrates a method for bringing external data into a Lightning Web Component. This component utilizes the code.org computer science school & program database to display the nearest 3 schools to a given property.
+This Lightning Web Component demonstrates a method for bringing external data into a Lightning Web Component. This component utilizes the code.org computer science school & program database to display the nearest three schools to a given property.
 
 <img src="screenshots/property-overview.png" alt="Nearby Computer Science Schools LWC"/>
 
