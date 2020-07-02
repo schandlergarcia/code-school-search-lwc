@@ -45,7 +45,7 @@ _Clone this repository and push to your Dreamhouse org_
 `cd code-school-search-lwc`
 `sfdx force:source:push -u <dreamhouse org username>`
 
-## Documentation
+## Code Highlights
 
 This component was designed to give you an introduction into designing and developing a Lightning Web Component around a use case that uses a 3rd party data source.
 
@@ -132,7 +132,50 @@ Use an `@wire` adaptor to enable the `getNearbyCodeSchools` method to be called 
 
 ```
 
-### 4) Navigate to a selected URL
+### 4) Base components
+
+The component relies on a number of base components from the [Component Library](https://developer.salesforce.com/docs/component-library/overview/components)
+
+_lightning-card_
+A Lightning Card component is used to wrap the body of the component, this gives the user a consistent experience with the way that salesforce exposes features into the UI. We have also specified a title and icon in the card. We have used the `slot="footer` to supply attribution to Code.org.
+
+```xml
+<lightning-card title="Nearby Computer Science Schools" icon-name="standard:apex">
+  <div class="slds-var-p-left_medium slds-var-p-right_medium">
+  <!-- Body -->
+  </div>
+  <div slot="footer">
+    <p class="slds-text-align_center">
+      Data supplied by the
+      <a data-url="https://code.org/" onclick={navigateToUrl}> code.org </a>Local School Database
+    </p>
+  </div>
+</lightning-card>
+```
+
+_lightning-tile_
+A Lightning Tile is used to display each school record in the UI. We are iterating over the `schools` array using a `template for:each={schools}` iterator and hydrating the tiles with each item. We are using an html dataset property to expose the `url` of the `school` to the element using `data-url={school.website}`. We are handling the selection of the tile using the `navigateToUrl` function.
+
+```xml
+<lightning-tile label={school.name} onclick={navigateToUrl} data-url={school.website}>
+  <!-- Body -->
+</lightning-tile>
+```
+
+_lightning-badge_
+A lightning Badge is used to display each language offered by the school. We are iterating over the `school.languages` array inside of the `schools` iteration. We are then hydrating the `lightning-badge` with the `language` value.
+
+```xml
+<ul class="slds-list_horizontal slds-wrap">
+  <template for:each={school.languages} for:item="language" for:index="i">
+    <li class="slds-item slds-var-p-right_x-small slds-var-p-top_xx-small" key={language.i}>
+      <lightning-badge label={language}></lightning-badge>
+    </li>
+  </template>
+</ul>
+```
+
+### 5) Navigate to a selected URL
 
 Import a the `NavigationMixin` to enable Lightning Navigation Services in the LWC and extend the `LightningElement` with the mixin.
 
@@ -156,4 +199,30 @@ Capture data from the `onclick={navigateToUrl}` and use the html dataset propert
     });
   }
 
+```
+
+### 6) Conditional Rendering
+
+The component uses `template if:true={property}` and `template if:false={property}` to conditionally hide and show aspects of the component.
+
+```xml
+<template>
+  <lightning-card title="Nearby Computer Science Schools" icon-name="standard:apex">
+    <template if:true={loading}>
+    <!-- if the component is loading, show a spinner -->
+    </template>
+    <template if:false={loading}>
+    <!-- If the component has finished loading, render the content -->
+      <template if:true={showError}>
+      <!-- If an error has occurred, show the message to the user -->
+      </template>
+      <template if:false={schools}>
+      <!-- If no schools have been set, show an empty state illustration -->
+      </template>
+      <template if:true={schools}>
+      <!-- If the schools property has been set, iterate over the schools -->
+      </template>
+    </template>
+  </lightning-card>
+</template>
 ```
